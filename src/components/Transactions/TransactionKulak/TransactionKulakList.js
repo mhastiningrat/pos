@@ -157,9 +157,6 @@ const TransactionKulakList = () => {
 
     useEffect(() => {
         function handleKeyDown(e) {
-          console.log(e.target);
-          console.log(e.keyCode);
-          console.log('Enter');
           addTransaction(e)
         }
     
