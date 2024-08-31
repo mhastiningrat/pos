@@ -6,10 +6,12 @@ import MainLayout from "./Layouts/MainLayout";
 import DashboardPage from "./pages/DashboardPage";
 import MasterAccountPage from "./pages/MasterAccountPage";
 import MasterCategoryPage from "./pages/MasterCategoryPage";
-import { initFlowbite } from 'flowbite'
+import { initFlowbite } from 'flowbite';
+import TransactionSalesPage from "./pages/TransactionSalesPage";
 
 function App() {
 	initFlowbite() // Initialize Flowbite components and plugins
+	
   return (
     <Router>
 			<Routes>
@@ -20,6 +22,7 @@ function App() {
 					<Route path="/mastercategory" element={<MasterCategoryPage />} />
 					<Route path="/masterbarang" element={<MasterBarangPage />} />
 					<Route path="/transaction-kulak" element={<TransactionKulakPage />} /> 
+					<Route path="/transaction-sales" element={<TransactionSalesPage />} /> 
 					{/* <Route path="/report" element={<ReportPage />} /> */}
 				</Route>
 			</Routes>

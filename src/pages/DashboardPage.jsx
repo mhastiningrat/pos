@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
 import DashboardCard from "../components/Dashboard/DashboardCard";
 import SalesChart from "../components/Dashboard/SalesChart";
 import RecentTransactions from "../components/Dashboard/RecentTransactions";
 import { FaShoppingCart, FaMoneyBillWave, FaBox } from "react-icons/fa";
 
 const DashboardPage = () => {
+	const navigate = useNavigate();
+
+	useEffect(()=>{
+		if(localStorage.getItem("unknown") === null){
+			navigate("/")
+		}
+	},[])
 	return (
 		<div className="p-8">
 			<h2 className="text-2xl font-bold mb-4">Dashboard</h2>

@@ -108,82 +108,102 @@ const AccountList = () => {
   return (
     <>
         {loading ? <Loading/> : ""}
-        <div className="mt-4 p-4 border rounded bg-white">
+        
+		<div className="mt-4 p-4 border rounded bg-white overflow-x-auto ">
 			<div className="flex justify-between mb-10">
-				<h3 className="text-lg font-semibold mb-2">Daftar Barang</h3>
+				<h3 className="text-lg font-semibold mb-2">Daftar Akun</h3>
 				<div className="flex gap-2 items-center">
-					<input
-						type="text"
-						placeholder="Cari Barang"
-						className="w-25 p-2 border rounded "
-					/>
-					<button className="bg-orange-400 text-white px-4 py-2 rounded">
-						Cari
-					</button>
-                    <button className="bg-green-400 text-white px-4 py-2 rounded" onClick={openModal}>
-						Tambah Account
+					
+                    <button className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" onClick={()=>{openModal()}}>
+						Tambah Akun
 					</button>
 				</div>
 			</div>
+			
 
-			<table className="min-w-full bg-white">
-				<thead>
-					<tr>
-						<th className="py-2 px-4 border-b">ID</th>
-						<th className="py-2 px-4 border-b text-left">Nama Account</th>
-						<th className="py-2 px-4 border-b text-left">Deskripsi</th>
-						<th className="py-2 px-4 border-b text-right">Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{account.map((account,idx) => (
-						<tr key={account.id}>
-							<td className="py-2 px-4 border-b text-center">{idx+1}</td>
-							<td className="py-2 px-4 border-b">{account.name}</td>
-							<td className="py-2 px-4 border-b">{account.description}</td>
-							<td className="py-2 px-4 border-b text-right">
-								<button className="bg-blue-400 text-white px-4 py-2 rounded me-1" onClick={()=>{setIdUpdate(account.id);setNamaUpdate(account.name);setDeskripsiUpdate(account.description);openModalUpdate()}}>
-									Update
-								</button>
-								<button className="bg-red-500 text-white px-4 py-2 rounded" onClick={()=>deleteAccount(account.id)}>
-									Delete
-								</button>
-							</td>
+			<div className="relative shadow-md sm:rounded-lg">
+				<div className="pb-4 bg-white ">
+					<label htmlFor="table-search" className="sr-only">Search</label>
+					<div className="relative mt-1">
+						<div className="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+							<svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+								<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+							</svg>
+						</div>
+						<input type="text" id="table-search" className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500  dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Cari akun ..."/>
+					</div>
+				</div>
+				<table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 w-full">
+					<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100">
+						<tr>
+							<th scope="col" className="px-6 py-3 text-left">
+								NO
+							</th>
+							<th scope="col" className="px-6 py-3 text-center">
+								Account
+							</th>
+							<th scope="col" className="px-6 py-3 text-center">
+								Deskripsi
+							</th>
+							<th scope="col" className="px-6 py-3 text-center">
+								Action
+							</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{account.map((account,idx) => (
+							<tr key={account.id} className="bg-white border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+								<th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-left">
+									{idx + 1}
+								</th>
+								<td className="px-6 py-4 text-center">
+									{account.name}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-center">
+									{account.description}
+								</td>
+								<td className="px-6 py-4 text-center">
+									<button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" 
+									onClick={()=>{
+										openModalUpdate();
+										setIdUpdate(account.id);
+										setNamaUpdate(account.name);
+										setDeskripsiUpdate(account.description)}}>
+										Edit
+									</button>
+									<button className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
+									onClick={()=>deleteAccount(account.id)}>
+										Hapus
+									</button>
+								</td>
+							</tr>
+						))}
+						
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 		<Modal isOpen={isModalOpen} onClose={closeModal}>
-			<h2 className="text-lg font-bold mb-10">Tambah Account</h2>
+			<h2 className="text-lg font-bold mb-10">Tambah Akun</h2>
 			
-			<div className="flex gap-2 items-center justify-between mb-2 w-full">
-				<label className="w-50">Nama</label>
-				<input
-					type="text"
-					placeholder="nama"
-					className="w-50 p-2 border rounded "
-					onChange={(e)=>setNama(e.target.value)}
-				/>
-						
+			<div className="grid gap-4 mb-4 grid-cols-2">
+				<div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Akun</label>
+                    <input  type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Admin" required="" onChange={(e)=>setNama(e.target.value)}/>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                    <input  type="text" name="price" id="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Akun sebagai admin" required="" onChange={(e)=>setDeskripsi(e.target.value)}/>
+                </div>
 			</div>
-			<div className="flex gap-2 items-center justify-between mb-2 w-full">
-				<label className="w-50"	>Deskripsi</label>
-				<input
-					type="text"
-					placeholder="deskripsi"
-					className="w-50 p-2 border rounded "
-					onChange={(e)=>setDeskripsi(e.target.value)}
-				/>
-						
-			</div>
+			
 			<div className='flex justify-between mt-14'>
 				<button
 				onClick={closeModal}
 				className="mt-4 bg-red-500 text-white p-2 rounded"
 				>
-				Close Modal
+				Close
 				</button>
 				<button
 				onClick={(e)=>addAccount(e)}
@@ -196,29 +216,17 @@ const AccountList = () => {
 		</Modal>
 
 		<Modal isOpen={isModalOpenUpdate} onClose={closeModalUpdate}>
-			<h2 className="text-lg font-bold mb-10">Update Account Id {idUpdate}</h2>
+			<h2 className="text-lg font-bold mb-10">Update Akun Id {idUpdate}</h2>
 			
-			<div className="flex gap-2 items-center justify-between mb-2 w-full">
-				<label className="w-50">Nama</label>
-				<input
-					type="text"
-					placeholder="nama"
-					className="w-50 p-2 border rounded "
-					defaultValue={namaUpdate}
-					onChange={(e)=>setNamaUpdate(e.target.value)}
-				/>
-						
-			</div>
-			<div className="flex gap-2 items-center justify-between mb-2 w-full">
-				<label className="w-50"	>Deskripsi</label>
-				<input
-					type="text"
-					placeholder="deskripsi"
-					className="w-50 p-2 border rounded "
-					defaultValue={deskripsiUpdate}
-					onChange={(e)=>setDeskripsiUpdate(e.target.value)}
-				/>
-						
+			<div className="grid gap-4 mb-4 grid-cols-2">
+				<div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Akun</label>
+                    <input defaultValue={namaUpdate} type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Admin" required="" onChange={(e)=>setNamaUpdate(e.target.value)}/>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                    <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                    <input defaultValue={deskripsiUpdate} type="text" name="price" id="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Akun untuk admin" required="" onChange={(e)=>setDeskripsiUpdate(e.target.value)}/>
+                </div>
 			</div>
 			<div className='flex justify-between mt-14'>
 				<button

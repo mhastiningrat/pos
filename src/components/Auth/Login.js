@@ -22,8 +22,9 @@ const Login = () => {
 			  }
 			  
 			let res = await axios.post(env.api + "auth/login",payload);
-			console.log(res)
+			
 			if(res && res.data.code === 200) {
+                localStorage.setItem("unknown", "aaa");
 				navigate('/dashboard');
 			}
 			setLoading(false);
