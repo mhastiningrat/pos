@@ -44,17 +44,16 @@ const ProductList = () => {
 
 	const openModalUpdate = () => {
 		setIsModalOpenUpdate(true)
-		console.log(categoryUpdate)
 	};
   	const closeModalUpdate = () => setIsModalOpenUpdate(false);
 
 	const getCategory = async()=>{
 		try {
             let data = await axios.get(env.api + 'master/category');
-			console.log(data)
+		
             if(data && data.data.code === 200){
                 setCategory(data.data.values);
-				console.log(category)
+				
             }
         } catch (error) {
             console.log(error)

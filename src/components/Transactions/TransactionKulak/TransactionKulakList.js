@@ -22,7 +22,7 @@ const TransactionKulakList = () => {
     const [categoryName,setCategoryName] = useState("");
 
     const [totalTransaksi,setTotalTransaksi] = useState(0);
-    const [payment,setPayment] = useState("");
+    const [payment,setPayment] = useState("cash");
 
 	const openModal = () => setIsModalOpen(true);
   	const closeModal = () => setIsModalOpen(false);
@@ -30,10 +30,9 @@ const TransactionKulakList = () => {
 	const getCategory = async()=>{
 		try {
             let data = await axios.get(env.api + 'master/category');
-			console.log(data)
+
             if(data && data.data.code === 200){
                 setCategory(data.data.values);
-				console.log(category)
             }
         } catch (error) {
             console.log(error)
@@ -106,14 +105,6 @@ const TransactionKulakList = () => {
             }
     }
 
-    function handleKeyPress(e)
-    {
-        if (e.key === 'Enter') 
-        {
-            console.log("Enter")
-        }
-    }
-
 	const addTransaction = async(e) =>{
 		e.preventDefault();
 		
@@ -157,7 +148,8 @@ const TransactionKulakList = () => {
 
     useEffect(() => {
         function handleKeyDown(e) {
-          addTransaction(e)
+            if(e.keyCode == 13)
+                addTransaction(e)
         }
     
         document.addEventListener("keydown", handleKeyDown);
@@ -169,7 +161,7 @@ const TransactionKulakList = () => {
   return (
     <>
         {loading ? <Loading/> : ""}
-        <div className="mt-4 p-4 border rounded bg-white overflow-x-auto " onKeyDown={(e)=>handleKeyPress(e)}>
+        <div className="mt-4 p-4 border rounded bg-white overflow-x-auto ">
 			<div className="flex justify-between mb-10">
 				<h3 className="text-2xl font-bold mb-2">Total : {rupiah(totalTransaksi)}</h3>
                 <h2 className="text-2xl font-bold mb-2">Order ID : DMS-001</h2>
@@ -183,10 +175,9 @@ const TransactionKulakList = () => {
                 <div className="grid gap-4 mb-10 grid-cols-4">
                     <div className="col-span-2 sm:col-span-1">
                         <label htmlFor="product" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pembayaran</label>
-                        <select id="payment" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" onChange={(e)=>setPayment(e.target.value)}>
-							<option value="">Pilih Pembayaran</option>
-							<option selected value="cash">Cash</option>
-							<option value="qris">Qris</option>
+                        <select id="payment" defaultValue={"cash"} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" onChange={(e)=>setPayment(e.target.value)}>
+                            <option value="cash">Cash</option>
+                            <option value="qris">Qris</option>
 							<option value="transfer">Transfer Bank</option>
                         </select>
                     </div>
