@@ -4,6 +4,8 @@ import Loading from '../../Utilities/Loading'
 import env from '../../../config/environment';
 import Modal from '../../Utilities/Modal';
 import {FaPen, FaSave, FaTimes } from 'react-icons/fa';
+import { rupiah } from '../../../helper/format';
+
 const TransactionSalesList = () => {
     const [loading,setLoading] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,6 +67,8 @@ const TransactionSalesList = () => {
             setProductId(val.split(",")[0]);
             setProductName(val.split(",")[1]);
             setProductPrice(val.split(",")[2]);
+            setCategoryId(val.split(",")[3]);
+            setCategoryName(val.split(",")[4]);
         }
     }
 
@@ -126,6 +130,11 @@ const TransactionSalesList = () => {
 				return;
 			}
 
+            if(detail.length === 0){
+				alert("Detail data tidak boleh kosong");
+				return;
+			}
+
 			setLoading(true);
 			await axios.post(env.api + 'transaction/sales',payload);
             window.location.reload();
@@ -137,15 +146,6 @@ const TransactionSalesList = () => {
 		}
 	}
 
-    const rupiah = (number)=>{
-        return new Intl.NumberFormat("id-ID", {
-          style: "currency",
-          currency: "IDR"
-        }).format(number);
-      }
-
-	
-
     useEffect(()=>{
         getCategory();
         getproduct();
@@ -154,59 +154,59 @@ const TransactionSalesList = () => {
     useEffect(()=>{
         calculateTotal();
     },[detail])
+
+    useEffect(() => {
+        function handleKeyDown(e) {
+          console.log(e.target);
+          console.log(e.keyCode);
+          console.log('Enter');
+          addTransaction(e)
+        }
+    
+        document.addEventListener("keydown", handleKeyDown);
+    
+        return function cleanup() {
+          document.removeEventListener("keydown", handleKeyDown);
+        };
+      }, []);
   return (
     <>
         {loading ? <Loading/> : ""}
         <div className="mt-4 p-4 border rounded bg-white overflow-x-auto ">
-			<div className="flex justify-between mb-10">
+            <div className="flex justify-between mb-10">
 				<h3 className="text-2xl font-bold mb-2">Total : {rupiah(totalTransaksi)}</h3>
+                <h2 className="text-2xl font-bold mb-2">Order ID : DMS-001</h2>
                 <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={(e)=>addTransaction(e)}>
                     Finish
                 </button>
 			</div>
 			
-
 			<div className="relative sm:rounded-lg">
-                <div className="grid gap-4 mb-4 grid-cols-2">
-                    <div className="col-span-2 sm:col-span-1">
-                        <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Order ID</label>
-                        <input type="number" name="orderid" id="orderid" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="TRX-001" required="" />
-                    </div>
+                <div className="grid gap-4 mb-10 grid-cols-4">
                     <div className="col-span-2 sm:col-span-1">
                         <label htmlFor="product" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pembayaran</label>
                         <select id="payment" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" onChange={(e)=>setPayment(e.target.value)}>
 							<option value="">Pilih Pembayaran</option>
-							<option value="cash">Cash</option>
+							<option selected value="cash">Cash</option>
 							<option value="qris">Qris</option>
 							<option value="transfer">Transfer Bank</option>
                         </select>
                     </div>
-                </div>
-                <div className="grid gap-4 mb-4 grid-cols-4">
                     <div className="col-span-2 sm:col-span-1">
                         <label htmlFor="product" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Product</label>
                         <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" onChange={(e)=>splitProduct(e.target.value)}>
 							<option value="">Pilih Product</option>
 							{product.length > 0 ? product.map((product) => (
-								<option key={product.id} value={product.id+","+product.name+","+product.price}>{product.name}</option>
-							)):""}
-                        </select>
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                        <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                        <select id="category" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" onChange={(e)=>splitCategory(e.target.value)}>
-							<option value="">Pilih Kategori</option>
-							{category.length > 0 ? category.map((category) => (
-								<option key={category.id} value={category.id+","+category.name}>{category.name}</option>
+								<option key={product.id} value={product.id+","+product.name+","+product.price+","+product.categoryId+","+product.categoryName}>{product.name}</option>
 							)):""}
                         </select>
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                         <label htmlFor="Quantity" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jumlah</label>
-                        <input id="quantity" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="100" onChange={(e)=>setQty(e.target.value)}/>                    
+                        <input id="quantity" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="" onChange={(e)=>setQty(e.target.value)}/>                    
                     </div>
                     <div className="col-span-2 sm:col-span-1">
-                        <label className='block mb-2'>.</label>
+                        <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>.</label>
                         <button className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" onClick={()=>addDetailTransaction()}>
                             Tambah
                         </button>
@@ -219,11 +219,14 @@ const TransactionSalesList = () => {
 							<th scope="col" className="px-6 py-3">
 								NO
 							</th>
+                            <th scope="col" className="px-6 py-3">
+								Nama Kategori
+							</th>
 							<th scope="col" className="px-6 py-3">
 								Nama Barang
 							</th>
 							<th scope="col" className="px-6 py-3">
-								Quantity
+								Kuantiti
 							</th>
 							<th scope="col" className="px-6 py-3 text-right">
 								Harga Satuan
@@ -242,6 +245,9 @@ const TransactionSalesList = () => {
 								<th scope="row" className="px-6 py-4 font-medium whitespace-nowrap ">
 									{idx + 1}
 								</th>
+                                <td className="px-6 py-4">
+									{detail.categoryName}
+								</td>
 								<td className="px-6 py-4">
 									{detail.productName}
 								</td>

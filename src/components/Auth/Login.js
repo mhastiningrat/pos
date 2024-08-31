@@ -7,7 +7,6 @@ import logods from "../../media/logods.png"
 
 const Login = () => {
 
-
     let navigate = useNavigate();
 	const [user, setUser] = useState("");
 	const [password, setPassword] = useState("");
