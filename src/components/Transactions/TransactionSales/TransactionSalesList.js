@@ -113,36 +113,38 @@ const TransactionSalesList = () => {
             }
     }
 
-	const addTransaction = async(e) =>{
+	const addTransaction = async(e,click) =>{
 		e.preventDefault();
+		if(e.keyCode === 13 || click){
+            try {
+                let payload = {
+                    
+                    "paymentMethod": payment,
+                    "totalAmount": totalTransaksi,
+                    "listSalesDetail": detail
+                }
+    
+                if(payment == ""){
+                    alert("Payment harus di pilih");
+                    return;
+                }
+    
+                if(detail.length === 0){
+                    alert("Detail data tidak boleh kosong");
+                    return;
+                }
+    
+                setLoading(true);
+                await axios.post(env.api + 'transaction/sales',payload);
+                window.location.reload();
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                alert(error.message);
+    
+            }
+        }
 		
-		try {
-			let payload = {
-				
-                "paymentMethod": payment,
-                "totalAmount": totalTransaksi,
-                "listSalesDetail": detail
-			}
-
-			if(payment == ""){
-				alert("Payment harus di pilih");
-				return;
-			}
-
-            if(detail.length === 0){
-				alert("Detail data tidak boleh kosong");
-				return;
-			}
-
-			setLoading(true);
-			await axios.post(env.api + 'transaction/sales',payload);
-            window.location.reload();
-			setLoading(false);
-		} catch (error) {
-			setLoading(false);
-			alert(error.message);
-
-		}
 	}
 
     useEffect(()=>{
@@ -154,18 +156,6 @@ const TransactionSalesList = () => {
         calculateTotal();
     },[detail])
 
-    useEffect(() => {
-        function handleKeyDown(e) {
-            if(e.keyCode === 13)
-                addTransaction(e)
-        }
-    
-        document.addEventListener("keydown", handleKeyDown);
-    
-        return function cleanup() {
-          document.removeEventListener("keydown", handleKeyDown);
-        };
-      }, []);
   return (
     <>
         {loading ? <Loading/> : ""}
@@ -173,7 +163,7 @@ const TransactionSalesList = () => {
             <div className="flex justify-between mb-10">
 				<h3 className="text-2xl font-bold mb-2">Total : {rupiah(totalTransaksi)}</h3>
                 <h2 className="text-2xl font-bold mb-2">Order ID : DMS-001</h2>
-                <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={(e)=>addTransaction(e)}>
+                <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={(e)=>addTransaction(e,"click")} onKeyDown={(e)=>addTransaction(e)}>
                     Finish
                 </button>
 			</div>
@@ -203,7 +193,7 @@ const TransactionSalesList = () => {
                     </div>
                     <div className="col-span-2 sm:col-span-1">
                         <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>.</label>
-                        <button className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" onClick={()=>addDetailTransaction()}>
+                        <button className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" onClick={()=>addDetailTransaction()} onKeyDown={(e)=>addTransaction(e)}>
                             Tambah
                         </button>
                     </div>
@@ -237,7 +227,7 @@ const TransactionSalesList = () => {
 					</thead>
 					<tbody>
 						{detail.map((detail,idx) => (
-							<tr key={product.id} className="bg-white border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+							<tr key={idx} className="bg-white border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
 								<th scope="row" className="px-6 py-4 font-medium whitespace-nowrap ">
 									{idx + 1}
 								</th>
